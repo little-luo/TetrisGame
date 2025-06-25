@@ -1,0 +1,33 @@
+@scope(body){
+    :scope{
+        width: 100vw;
+        height: 100vh;
+        background:lightgray;
+        margin: 0px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    #canvasBlock{
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        position: relative;
+        column-gap: 50px;
+    }
+
+    #grid,#nextShape{
+        border: 1px solid black;
+        background-color: white;
+    }
+
+    #grid{
+        width: 480px;
+        height: 800px;
+    }
+
+    #nextShape{
+        width: 200px;
+        aspect-ratio: 1 / 1;
+    }
+}
