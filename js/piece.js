@@ -21,13 +21,58 @@ export class Piece {
                 if (value !== 0) {
                     gridCtx.fillStyle = "red";
                     gridCtx.fillRect(
-                        x * cellSize + this.offset.x * cellSize + 0.5,
-                        y * cellSize + this.offset.y * cellSize + 0.5,
-                        cellSize - 1,
-                        cellSize - 1
+                        x * cellSize + this.offset.x * cellSize,
+                        y * cellSize + this.offset.y * cellSize,
+                        cellSize,
+                        cellSize
+                    );
+                    grid.redrawGrid(
+                        x * cellSize + this.offset.x * cellSize,
+                        y * cellSize + this.offset.y * cellSize
                     );
                 }
             });
         });
+    }
+    clear(grid) {
+        const cellSize = grid.cellSize;
+        this.matrix["T"].forEach((row, y) => {
+            row.forEach((value, x) => {
+                if (value !== 0) {
+                    gridCtx.clearRect(
+                        x * cellSize + this.offset.x * cellSize,
+                        y * cellSize + this.offset.y * cellSize,
+                        cellSize,
+                        cellSize
+                    );
+                    grid.redrawGrid(
+                        x * cellSize + this.offset.x * cellSize,
+                        y * cellSize + this.offset.y * cellSize
+                    );
+                }
+            });
+        });
+    }
+    move(dir, grid) {
+        switch (dir) {
+            case "down": {
+                this.clear(grid);
+                this.offset.y += 1;
+                this.draw(grid);
+                break;
+            }
+            case "left": {
+                this.clear(grid);
+                this.offset.x -= 1;
+                this.draw(grid);
+                break;
+            }
+            case "right": {
+                this.clear(grid);
+                this.offset.x += 1;
+                this.draw(grid);
+                break;
+            }
+        }
     }
 }

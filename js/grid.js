@@ -40,4 +40,8 @@ export class Grid {
         this.matrix = matrix;
         // console.table(matrix);
     }
+    redrawGrid(x, y) {
+        gridCtx.lineWidth = 1;
+        gridCtx.strokeRect(x, y, this.cellSize, this.cellSize);
+    }
 }

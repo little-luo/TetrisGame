@@ -5,10 +5,45 @@ import { Piece } from "./piece.js";
 
 let grid = new Grid(20, 12);
 grid.createMatrix();
-grid.drawGrid();
 
 let preview = new Preview(5, 5);
-preview.drawGrid();
 
 let piece = new Piece();
-piece.draw(grid);
+
+(function () {
+    grid.drawGrid();
+    preview.drawGrid();
+    piece.draw(grid);
+    window.addEventListener("keydown", function (e) {
+        switch (e.code) {
+            case "ArrowDown": {
+                piece.move("down", grid);
+                break;
+            }
+            case "ArrowLeft": {
+                piece.move("left", grid);
+                break;
+            }
+            case "ArrowRight": {
+                piece.move("right", grid);
+                break;
+            }
+        }
+        return;
+    });
+})();
+
+let lastTime = 0;
+let deltaTimeSum = 0;
+function render(time = 0) {
+    let deltaTime = time - lastTime;
+    lastTime = time;
+    deltaTimeSum += deltaTime;
+    // console.log(deltaTimeSum);
+    if (deltaTimeSum >= 1000) {
+        piece.move("down", grid);
+        deltaTimeSum = 0;
+    }
+    requestAnimationFrame(render);
+}
+render();
