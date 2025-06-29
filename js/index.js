@@ -30,11 +30,11 @@ window.piece = piece;
                 break;
             }
             case "KeyZ": {
-                piece.rotate(-1);
+                piece.rotate(-1, grid);
                 break;
             }
             case "KeyX": {
-                piece.rotate(1);
+                piece.rotate(1, grid);
                 break;
             }
         }

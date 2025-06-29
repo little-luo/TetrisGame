@@ -119,7 +119,7 @@ export class Grid {
         gridCtx.lineWidth = 3;
         gridCtx.strokeRect(0, 0, gridCanvas.width, gridCanvas.height);
     }
-    // 有問題
+    // 清除列
     clearLine() {
         for (let y = this.rows - 1; y >= 0; y--) {
             /**
@@ -130,7 +130,6 @@ export class Grid {
             let isClear = this.matrix[y].every(function (value) {
                 return value > 0;
             });
-            console.log(isClear);
             if (isClear) {
                 // 移除元素
                 this.matrix.splice(y, 1);
@@ -153,10 +152,28 @@ export class Grid {
                         this.cellSize
                     );
                 }
+                // 更新畫面
+                for (let i = y; i >= 0; i--) {
+                    for (let j = 0; j < this.columns; j++) {
+                        let value = this.matrix[i][j];
+                        if (value === 0) {
+                            gridCtx.clearRect(
+                                j * this.cellSize,
+                                i * this.cellSize,
+                                this.cellSize,
+                                this.cellSize
+                            );
+                            this.redrawGrid(
+                                j * this.cellSize,
+                                i * this.cellSize
+                            );
+                        }
+                    }
+                }
                 y++;
                 // 重新繪製外框線
                 this.drawOutLine();
-                console.log(this.matrix);
+                // console.log(this.matrix);
             }
         }
     }

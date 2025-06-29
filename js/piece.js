@@ -131,7 +131,7 @@ export class Piece {
                     this.offset.y -= 1;
                     // 發生碰撞才merge gridMatrix 與 pieceMatrix
                     grid.merge(this);
-                    // grid.clearLine();
+                    grid.clearLine();
                     // 重製 offset位置，顯示
                     // 下一個方塊
                     this.offset.x = 5;
@@ -187,7 +187,8 @@ export class Piece {
         this.preview.update();
     }
     // 旋轉方塊
-    rotate(dir) {
+    rotate(dir, grid) {
+        this.clear(grid);
         let currentMatrix = this.currentMatrix;
         let temp = undefined;
         // 轉置矩陣
@@ -223,6 +224,7 @@ export class Piece {
                 }
             }
         }
+        this.draw(grid);
         // console.table(currentMatrix);
     }
 }
