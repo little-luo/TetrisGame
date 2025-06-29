@@ -2,6 +2,8 @@
 export const gridCanvas = document.getElementById("grid");
 export const gridCtx = gridCanvas.getContext("2d");
 
+import { COLOR } from "./piece.js";
+
 export class Grid {
     constructor(rows, columns) {
         this.rows = rows;
@@ -16,10 +18,7 @@ export class Grid {
     }
     // 繪製格線
     drawGrid() {
-        // 繪製外框線
-        gridCtx.beginPath();
-        gridCtx.lineWidth = 3;
-        gridCtx.strokeRect(0, 0, gridCanvas.width, gridCanvas.height);
+        this.drawOutLine();
         // 繪製 20x12個方格
         for (let y = 0; y < this.rows; y++) {
             for (let x = 0; x < this.columns; x++) {
@@ -43,7 +42,7 @@ export class Grid {
                         x: x * this.cellSize,
                         y: y * this.cellSize,
                     };
-                    gridCtx.fillStyle = "red";
+                    gridCtx.fillStyle = COLOR[value];
                     gridCtx.fillRect(
                         piecePos.x,
                         piecePos.y,
@@ -71,7 +70,7 @@ export class Grid {
     // 合併 gridMatrix 與 pieceMatrix
     merge(piece) {
         let gridMatrix = this.matrix;
-        let pieceMatrix = piece.matrix["T"];
+        let pieceMatrix = piece.currentMatrix;
         let [offsetX, offsetY] = Object.values(piece.offset);
         /**
          * y + offsetY 是 pieceMatrix 在 gridMatrix 上的row索引值
@@ -91,7 +90,7 @@ export class Grid {
     // 檢查每一方塊是否發生碰撞
     checkCollision(piece) {
         let gridMatrix = this.matrix;
-        let pieceMatrix = piece.matrix["T"];
+        let pieceMatrix = piece.currentMatrix;
         let [offsetX, offsetY] = Object.values(piece.offset);
         let value;
         // console.table(gridMatrix);
@@ -108,5 +107,16 @@ export class Grid {
             }
         }
         return false;
+    }
+    // 初始化
+    init() {
+        this.createMatrix();
+        this.drawGrid();
+    }
+    //繪製外框線
+    drawOutLine() {
+        gridCtx.beginPath();
+        gridCtx.lineWidth = 3;
+        gridCtx.strokeRect(0, 0, gridCanvas.width, gridCanvas.height);
     }
 }

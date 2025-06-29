@@ -4,17 +4,15 @@ import { Preview } from "./preview.js";
 import { Piece } from "./piece.js";
 
 let grid = new Grid(20, 12);
-grid.createMatrix();
 
 let preview = new Preview(5, 5);
 
 let piece = new Piece();
-
 // 初始化
 (function () {
-    grid.drawGrid();
-    preview.drawGrid();
-    piece.draw(grid);
+    grid.init();
+    piece.init(preview, grid);
+    preview.init();
     // 綁定 keydown 事件
     window.addEventListener("keydown", function (e) {
         switch (e.code) {

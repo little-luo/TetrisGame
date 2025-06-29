@@ -1,4 +1,53 @@
 import { gridCtx } from "./grid.js";
+export const COLOR = {
+    1: "aqua",
+    2: "blue",
+    3: "orange",
+    4: "yellow",
+    5: "green",
+    6: "red",
+    7: "pink",
+};
+
+export const SHAPE = ["I", "J", "L", "O", "S", "Z", "T"];
+
+export const MATRIX = {
+    I: [
+        [0, 0, 0, 0],
+        [1, 1, 1, 1],
+        [0, 0, 0, 0],
+        [0, 0, 0, 0],
+    ],
+    J: [
+        [2, 0, 0],
+        [2, 2, 2],
+        [0, 0, 0],
+    ],
+    L: [
+        [0, 0, 3],
+        [3, 3, 3],
+        [0, 0, 0],
+    ],
+    O: [
+        [4, 4],
+        [4, 4],
+    ],
+    S: [
+        [0, 5, 5],
+        [5, 5, 0],
+        [0, 0, 0],
+    ],
+    Z: [
+        [6, 6, 0],
+        [0, 6, 6],
+        [0, 0, 0],
+    ],
+    T: [
+        [0, 7, 0],
+        [7, 7, 7],
+        [0, 0, 0],
+    ],
+};
 
 export class Piece {
     // 偏移
@@ -7,21 +56,19 @@ export class Piece {
         y: 0,
     };
     constructor() {
-        this.matrix = {
-            T: [
-                [0, 0, 0],
-                [1, 1, 1],
-                [0, 1, 0],
-            ],
-        };
+        this.matrix = MATRIX;
+        this.currentMatrix =
+            this.matrix[SHAPE[Math.floor(Math.random() * SHAPE.length)]];
+        this.nextMatrix =
+            this.matrix[SHAPE[Math.floor(Math.random() * SHAPE.length)]];
     }
     // 在指定位置繪製方塊後重新繪製格線
     draw(grid) {
         const cellSize = grid.cellSize;
-        this.matrix["T"].forEach((rows, y) => {
+        this.currentMatrix.forEach((rows, y) => {
             rows.forEach((value, x) => {
                 if (value !== 0) {
-                    gridCtx.fillStyle = "red";
+                    gridCtx.fillStyle = COLOR[value];
                     gridCtx.fillRect(
                         x * cellSize + this.offset.x * cellSize,
                         y * cellSize + this.offset.y * cellSize,
@@ -39,7 +86,7 @@ export class Piece {
     // 清除指定位置的方塊後重新繪製格線
     clear(grid) {
         const cellSize = grid.cellSize;
-        this.matrix["T"].forEach((row, y) => {
+        this.currentMatrix.forEach((row, y) => {
             row.forEach((value, x) => {
                 if (value !== 0) {
                     gridCtx.clearRect(
@@ -55,6 +102,7 @@ export class Piece {
                 }
             });
         });
+        grid.drawOutLine();
     }
     // 移動
     move(dir, grid) {
@@ -72,7 +120,9 @@ export class Piece {
                     grid.merge(this);
                     // 重製 offset位置，顯示
                     // 下一個方塊
+                    this.offset.x = 5;
                     this.offset.y = 0;
+                    this.update();
                 }
                 this.draw(grid);
                 break;
@@ -103,5 +153,19 @@ export class Piece {
             }
         }
         grid.drawPiece();
+    }
+
+    changeCurrentMatrix(nextMatrix) {
+        this.currentMatrix = nextMatrix;
+    }
+
+    init(preview, grid) {
+        this.preview = preview;
+        this.draw(grid);
+    }
+
+    update() {
+        this.changeCurrentMatrix(this.preview.nextMatrix);
+        this.preview.update();
     }
 }
