@@ -10,10 +10,12 @@ let preview = new Preview(5, 5);
 
 let piece = new Piece();
 
+// 初始化
 (function () {
     grid.drawGrid();
     preview.drawGrid();
     piece.draw(grid);
+    // 綁定 keydown 事件
     window.addEventListener("keydown", function (e) {
         switch (e.code) {
             case "ArrowDown": {
