@@ -79,8 +79,11 @@ export class Preview {
 
     update() {
         this.clear();
-        this.nextMatrix =
-            MATRIX[SHAPE[Math.floor(Math.random() * SHAPE.length)]];
+        this.nextMatrix = JSON.parse(
+            JSON.stringify(
+                MATRIX[SHAPE[Math.floor(Math.random() * SHAPE.length)]]
+            )
+        );
         // console.table(this.nextMatrix);
         this.drawPiece();
     }

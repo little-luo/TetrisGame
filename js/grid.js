@@ -37,11 +37,11 @@ export class Grid {
     drawPiece() {
         this.matrix.forEach((row, y) => {
             row.forEach((value, x) => {
+                let piecePos = {
+                    x: x * this.cellSize,
+                    y: y * this.cellSize,
+                };
                 if (value !== 0) {
-                    let piecePos = {
-                        x: x * this.cellSize,
-                        y: y * this.cellSize,
-                    };
                     gridCtx.fillStyle = COLOR[value];
                     gridCtx.fillRect(
                         piecePos.x,
@@ -85,7 +85,7 @@ export class Grid {
                 }
             });
         });
-        console.table(gridMatrix);
+        // console.table(gridMatrix);
     }
     // 檢查每一方塊是否發生碰撞
     checkCollision(piece) {
@@ -118,5 +118,46 @@ export class Grid {
         gridCtx.beginPath();
         gridCtx.lineWidth = 3;
         gridCtx.strokeRect(0, 0, gridCanvas.width, gridCanvas.height);
+    }
+    // 有問題
+    clearLine() {
+        for (let y = this.rows - 1; y >= 0; y--) {
+            /**
+             * 檢查每一列的每一個值是否大於 0
+             * 若每一個值 大於0 則回傳true 表示要清除列
+             * 只要有一個值 <= 0 則回傳 false 表示不要清除列
+             */
+            let isClear = this.matrix[y].every(function (value) {
+                return value > 0;
+            });
+            console.log(isClear);
+            if (isClear) {
+                // 移除元素
+                this.matrix.splice(y, 1);
+                // 新增元素到陣列的第一個位置
+                this.matrix.unshift(Array(this.columns).fill(0));
+                // 清除列
+                gridCtx.clearRect(
+                    0,
+                    0 + this.cellSize * y,
+                    this.cellSize * this.columns,
+                    this.cellSize
+                );
+                // 重新繪製格線
+                gridCtx.lineWidth = 1;
+                for (let x = 0; x < this.matrix[y].length; x++) {
+                    gridCtx.strokeRect(
+                        0 + this.cellSize * x,
+                        0 + this.cellSize * y,
+                        this.cellSize,
+                        this.cellSize
+                    );
+                }
+                y++;
+                // 重新繪製外框線
+                this.drawOutLine();
+                console.log(this.matrix);
+            }
+        }
     }
 }

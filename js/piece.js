@@ -57,10 +57,23 @@ export class Piece {
     };
     constructor() {
         this.matrix = MATRIX;
-        this.currentMatrix =
-            this.matrix[SHAPE[Math.floor(Math.random() * SHAPE.length)]];
-        this.nextMatrix =
-            this.matrix[SHAPE[Math.floor(Math.random() * SHAPE.length)]];
+        // 淺拷貝
+        // this.currentMatrix =
+        //     this.matrix[SHAPE[Math.floor(Math.random() * SHAPE.length)]];
+        // 淺拷貝
+        // this.nextMatrix =
+        //     this.matrix[SHAPE[Math.floor(Math.random() * SHAPE.length)]];
+        // 用 JSON 方式深拷貝
+        this.currentMatrix = JSON.parse(
+            JSON.stringify(
+                this.matrix[SHAPE[Math.floor(Math.random() * SHAPE.length)]]
+            )
+        );
+        this.nextMatrix = JSON.parse(
+            JSON.stringify(
+                this.matrix[SHAPE[Math.floor(Math.random() * SHAPE.length)]]
+            )
+        );
     }
     // 在指定位置繪製方塊後重新繪製格線
     draw(grid) {
@@ -88,18 +101,18 @@ export class Piece {
         const cellSize = grid.cellSize;
         this.currentMatrix.forEach((row, y) => {
             row.forEach((value, x) => {
-                if (value !== 0) {
-                    gridCtx.clearRect(
-                        x * cellSize + this.offset.x * cellSize,
-                        y * cellSize + this.offset.y * cellSize,
-                        cellSize,
-                        cellSize
-                    );
-                    grid.redrawGrid(
-                        x * cellSize + this.offset.x * cellSize,
-                        y * cellSize + this.offset.y * cellSize
-                    );
-                }
+                // if (value !== 0) {
+                gridCtx.clearRect(
+                    x * cellSize + this.offset.x * cellSize,
+                    y * cellSize + this.offset.y * cellSize,
+                    cellSize,
+                    cellSize
+                );
+                grid.redrawGrid(
+                    x * cellSize + this.offset.x * cellSize,
+                    y * cellSize + this.offset.y * cellSize
+                );
+                // }
             });
         });
         grid.drawOutLine();
@@ -118,6 +131,7 @@ export class Piece {
                     this.offset.y -= 1;
                     // 發生碰撞才merge gridMatrix 與 pieceMatrix
                     grid.merge(this);
+                    // grid.clearLine();
                     // 重製 offset位置，顯示
                     // 下一個方塊
                     this.offset.x = 5;
@@ -153,19 +167,62 @@ export class Piece {
             }
         }
         grid.drawPiece();
+        grid.drawOutLine();
     }
 
     changeCurrentMatrix(nextMatrix) {
-        this.currentMatrix = nextMatrix;
+        // 淺拷貝
+        // this.currentMatrix = nextMatrix;
+        // 深拷貝，避免 reference
+        this.currentMatrix = JSON.parse(JSON.stringify(nextMatrix));
     }
 
     init(preview, grid) {
         this.preview = preview;
         this.draw(grid);
     }
-
+    // 產生下一個新的方塊
     update() {
         this.changeCurrentMatrix(this.preview.nextMatrix);
         this.preview.update();
+    }
+    // 旋轉方塊
+    rotate(dir) {
+        let currentMatrix = this.currentMatrix;
+        let temp = undefined;
+        // 轉置矩陣
+        currentMatrix.forEach((row, y) => {
+            row.forEach((value, x) => {
+                if (y < x) {
+                    temp = currentMatrix[y][x];
+                    currentMatrix[y][x] = currentMatrix[x][y];
+                    currentMatrix[x][y] = temp;
+                }
+            });
+        });
+        // 順時針，row reverse
+        if (dir > 0) {
+            currentMatrix.forEach((row, y) => {
+                currentMatrix[y] = row.reverse();
+            });
+        }
+
+        // 逆時針，column reverse
+        if (dir < 0) {
+            let temp = undefined;
+            let length = currentMatrix.length;
+            for (let x = 0; x < length; x++) {
+                let start = 0;
+                let end = length - 1;
+                while (start < end) {
+                    temp = currentMatrix[start][x];
+                    currentMatrix[start][x] = currentMatrix[end][x];
+                    currentMatrix[end][x] = temp;
+                    start++;
+                    end--;
+                }
+            }
+        }
+        // console.table(currentMatrix);
     }
 }
