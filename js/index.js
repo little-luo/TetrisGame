@@ -39,6 +39,10 @@ window.piece = piece;
                 piece.playerRotate(1, grid);
                 break;
             }
+            case "ShiftLeft": {
+                piece.swap(grid);
+                break;
+            }
         }
         return;
     });

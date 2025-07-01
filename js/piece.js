@@ -263,4 +263,26 @@ export class Piece {
         // 繪製旋轉後的方塊
         this.draw(grid);
     }
+
+    swap(grid) {
+        // 清除舊的方塊
+        this.clear(grid);
+
+        // 清除預覽圖上舊的方塊
+        this.preview.clear(grid);
+
+        // 交換 currentMatrix 與 nextMatrix
+        let temp = JSON.parse(JSON.stringify(this.currentMatrix));
+        this.currentMatrix = JSON.parse(
+            JSON.stringify(this.preview.nextMatrix)
+        );
+        this.preview.nextMatrix = JSON.parse(JSON.stringify(temp));
+        // console.table(this.currentMatrix);
+        // console.table(this.preview.nextMatrix);
+
+        // 改變預覽圖的畫面
+        this.preview.drawPiece();
+        // 再畫一次新的方塊
+        this.draw(grid);
+    }
 }
