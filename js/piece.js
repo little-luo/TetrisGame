@@ -245,4 +245,22 @@ export class Piece {
         this.draw(grid);
         // console.table(currentMatrix);
     }
+
+    // Wall Kick
+    playerRotate(dir, grid) {
+        let oldOffsetX = this.offset.x;
+        let displacement = 1;
+        this.rotate(dir, grid);
+        while (grid.checkCollision(this)) {
+            this.offset.x += displacement;
+            displacement = -(displacement + (displacement > 0 ? 1 : -1));
+            if (displacement > this.currentMatrix[0].length) {
+                this.rotate(-dir, grid);
+                this.offset.x = oldOffsetX;
+                return;
+            }
+        }
+        // 繪製旋轉後的方塊
+        this.draw(grid);
+    }
 }

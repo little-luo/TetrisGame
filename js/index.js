@@ -30,11 +30,13 @@ window.piece = piece;
                 break;
             }
             case "KeyZ": {
-                piece.rotate(-1, grid);
+                // piece.rotate(-1, grid);
+                piece.playerRotate(-1, grid);
                 break;
             }
             case "KeyX": {
-                piece.rotate(1, grid);
+                // piece.rotate(1, grid);
+                piece.playerRotate(1, grid);
                 break;
             }
         }
