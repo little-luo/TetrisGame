@@ -15,6 +15,8 @@ export class Grid {
         this.cellSize = gridCanvas.height / rows;
 
         gridCtx.fillStyle = "black";
+
+        this.line = 0;
     }
     // 繪製格線
     drawGrid() {
@@ -121,6 +123,7 @@ export class Grid {
     }
     // 清除列
     clearLine() {
+        let clearCount = 0;
         for (let y = this.rows - 1; y >= 0; y--) {
             /**
              * 檢查每一列的每一個值是否大於 0
@@ -131,6 +134,8 @@ export class Grid {
                 return value > 0;
             });
             if (isClear) {
+                clearCount++;
+                this.line++;
                 // 移除元素
                 this.matrix.splice(y, 1);
                 // 新增元素到陣列的第一個位置
@@ -176,5 +181,6 @@ export class Grid {
                 // console.log(this.matrix);
             }
         }
+        return clearCount;
     }
 }

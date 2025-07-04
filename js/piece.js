@@ -149,7 +149,9 @@ export class Piece {
                     this.offset.y -= 1;
                     // 發生碰撞才merge gridMatrix 與 pieceMatrix
                     grid.merge(this);
-                    grid.clearLine();
+                    if (grid.clearLine() > 0) {
+                        this.score.displayScore();
+                    }
                     // 重製 offset位置，顯示
                     // 下一個方塊
                     this.offset.x = 5;
@@ -195,9 +197,10 @@ export class Piece {
         this.currentMatrix = JSON.parse(JSON.stringify(nextMatrix));
     }
 
-    init(preview, grid) {
+    init(preview, grid, score) {
         this.preview = preview;
         this.draw(grid);
+        this.score = score;
     }
     // 產生下一個新的方塊
     update() {

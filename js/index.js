@@ -2,6 +2,7 @@ import { Grid } from "./grid.js";
 import { Preview } from "./preview.js";
 
 import { Piece } from "./piece.js";
+import { Score } from "./score.js";
 
 let grid = new Grid(20, 12);
 window.grid = grid;
@@ -9,11 +10,14 @@ let preview = new Preview(5, 5);
 
 let piece = new Piece();
 window.piece = piece;
+
+let score = new Score();
 // 初始化
 (function () {
     grid.init();
-    piece.init(preview, grid);
+    piece.init(preview, grid, score);
     preview.init();
+    score.init(grid);
     // 綁定 keydown 事件
     window.addEventListener("keydown", function (e) {
         switch (e.code) {
