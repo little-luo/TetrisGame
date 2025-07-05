@@ -1,4 +1,9 @@
 import { gridCtx } from "./grid.js";
+
+import { dropSound } from "./sound.js";
+
+import { rotateSound } from "./sound.js";
+
 export const COLOR = {
     1: "aqua",
     2: "blue",
@@ -77,25 +82,8 @@ export class Piece {
     }
     // 在指定位置繪製方塊後重新繪製格線
     draw(grid) {
-        let gridMatrix = grid.matrix;
         const cellSize = grid.cellSize;
-
-        this.currentMatrix.forEach((row, y) => {
-            row.forEach((value, x) => {
-                while (
-                    value !== 0 &&
-                    gridMatrix[y + this.offset.y][x + this.offset.x] > 0
-                ) {
-                    this.offset.y -= 1;
-                    console.log(this.offset.y);
-                    if (gridMatrix[0 + this.offset.y] === undefined) {
-                        window.location.reload();
-                        return;
-                    }
-                }
-            });
-        });
-
+        this.gameOver(grid);
         this.currentMatrix.forEach((rows, y) => {
             rows.forEach((value, x) => {
                 if (value !== 0) {
@@ -113,6 +101,25 @@ export class Piece {
                 }
             });
         });
+    }
+    gameOver(grid) {
+        let gridMatrix = grid.matrix;
+        this.currentMatrix.forEach((row, y) => {
+            row.forEach((value, x) => {
+                while (
+                    value !== 0 &&
+                    gridMatrix[y + this.offset.y][x + this.offset.x] > 0
+                ) {
+                    this.offset.y -= 1;
+                    console.log(this.offset.y);
+                    if (gridMatrix[0 + this.offset.y] === undefined) {
+                        window.location.reload();
+                        return true;
+                    }
+                }
+            });
+        });
+        return false;
     }
     // 清除指定位置的方塊後重新繪製格線
     clear(grid) {
@@ -145,6 +152,8 @@ export class Piece {
                 this.offset.y += 1;
                 // 每次移動方塊就進行碰撞判斷
                 if (grid.checkCollision(this)) {
+                    // 播放音效
+                    dropSound.play();
                     // 發生碰撞，將位置復原回原來的位置
                     this.offset.y -= 1;
                     // 發生碰撞才merge gridMatrix 與 pieceMatrix
@@ -245,6 +254,9 @@ export class Piece {
                 }
             }
         }
+        // 播放音效
+        rotateSound.play();
+
         this.draw(grid);
         // console.table(currentMatrix);
     }

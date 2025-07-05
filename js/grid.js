@@ -3,6 +3,7 @@ export const gridCanvas = document.getElementById("grid");
 export const gridCtx = gridCanvas.getContext("2d");
 
 import { COLOR } from "./piece.js";
+import { clearLineSound } from "./sound.js";
 
 export class Grid {
     constructor(rows, columns) {
@@ -179,6 +180,8 @@ export class Grid {
                 // 重新繪製外框線
                 this.drawOutLine();
                 // console.log(this.matrix);
+
+                clearLineSound.play();
             }
         }
         return clearCount;
